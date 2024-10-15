@@ -197,7 +197,7 @@ replace (
 	// use Realio sdk v0.46.11-realio-4
 	// github.com/cosmos/cosmos-sdk => github.com/realiotech/cosmos-sdk v0.46.11-realio-4
 
-	github.com/cosmos/cosmos-sdk => github.com/decentrio/cosmos-sdk v0.46.12-0.20240103120710-e7af80d04f39
+	github.com/cosmos/cosmos-sdk => github.com/DongLieu/cosmos-sdk v0.0.0-20241014111400-43ca986eaf0c
 	// github.com/cosmos/cosmos-sdk => ./cosmos-sdk
 
 	// temporary fork of ethermint while evmos upgrades
