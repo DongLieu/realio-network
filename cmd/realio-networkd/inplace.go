@@ -65,10 +65,9 @@ type valArgs struct {
 	homeDir          string
 }
 
-func NewInplaceCmd(addStartFlags servertypes.ModuleInitFlags, encodingConfig simappparams.EncodingConfig) *cobra.Command {
+func NewInplaceCmd(encodingConfig simappparams.EncodingConfig) *cobra.Command {
 	encoding = encodingConfig
 	cmd := server.InPlaceTestnetCreator(newTestnetApp, app.DefaultNodeHome)
-	addStartFlags(cmd)
 	cmd.Use = "testnet-inplace [newChainID] [newOperatorAddress]"
 	cmd.Short = "Updates chain's application and consensus state with provided validator info and starts the node"
 	cmd.Long = `The test command modifies both application and consensus stores within a local mainnet node and starts the node,
@@ -144,6 +143,8 @@ func initAppForTestnet(app *app.RealioNetwork, args valArgs) *app.RealioNetwork 
 		MinSelfDelegation: sdk.OneInt(),
 	}
 
+	app.SlashingKeeper.AddPubkey(ctx, pubkey)
+
 	// Remove all validators from power store
 	stakingKey := app.GetKey(stakingtypes.ModuleName)
 	stakingStore := ctx.KVStore(stakingKey)
@@ -186,12 +187,8 @@ func initAppForTestnet(app *app.RealioNetwork, args valArgs) *app.RealioNetwork 
 	for ; iterator.Valid(); iterator.Next() {
 		key := iterator.Key()
 		if timestamp(key).After(time.Now()) {
-			fmt.Println()
-			fmt.Println("111")
 			continue
 		} else {
-			fmt.Println()
-			fmt.Println("====111")
 			stakingStore.Delete(key)
 		}
 	}
