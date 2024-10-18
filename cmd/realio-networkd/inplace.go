@@ -15,9 +15,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/server"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	// storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	// distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -145,54 +145,54 @@ func initAppForTestnet(app *app.RealioNetwork, args valArgs) *app.RealioNetwork 
 
 	app.SlashingKeeper.AddPubkey(ctx, pubkey)
 
-	// Remove all validators from power store
-	stakingKey := app.GetKey(stakingtypes.ModuleName)
-	stakingStore := ctx.KVStore(stakingKey)
-	iterator := app.StakingKeeper.ValidatorsPowerStoreIterator(ctx)
-	for ; iterator.Valid(); iterator.Next() {
-		stakingStore.Delete(iterator.Key())
-	}
-	iterator.Close()
+	// // Remove all validators from power store
+	// stakingKey := app.GetKey(stakingtypes.ModuleName)
+	// stakingStore := ctx.KVStore(stakingKey)
+	// iterator := app.StakingKeeper.ValidatorsPowerStoreIterator(ctx)
+	// for ; iterator.Valid(); iterator.Next() {
+	// 	stakingStore.Delete(iterator.Key())
+	// }
+	// iterator.Close()
 
 	// powSkip := app.StakingKeeper.GetLastValidatorPower(ctx, valSkip)
 	// Remove all valdiators from last validators store
-	iterator = app.StakingKeeper.LastValidatorsIterator(ctx)
-	for ; iterator.Valid(); iterator.Next() {
-		key := iterator.Key()
-		stakingStore.Delete(key)
-	}
-	iterator.Close()
-	// app.StakingKeeper.SetLastValidatorPower(ctx, valSkip, powSkip)
+	// iterator = app.StakingKeeper.LastValidatorsIterator(ctx)
+	// for ; iterator.Valid(); iterator.Next() {
+	// 	key := iterator.Key()
+	// 	stakingStore.Delete(key)
+	// }
+	// iterator.Close()
+	// // app.StakingKeeper.SetLastValidatorPower(ctx, valSkip, powSkip)
 
-	// Remove all validators from validators store
+	// // Remove all validators from validators store
 
-	iterator = stakingStore.Iterator(stakingtypes.ValidatorsKey, storetypes.PrefixEndBytes(stakingtypes.ValidatorsKey))
-	for ; iterator.Valid(); iterator.Next() {
-		key := iterator.Key()
-		stakingStore.Delete(key)
-	}
-	iterator.Close()
+	// iterator = stakingStore.Iterator(stakingtypes.ValidatorsKey, storetypes.PrefixEndBytes(stakingtypes.ValidatorsKey))
+	// for ; iterator.Valid(); iterator.Next() {
+	// 	key := iterator.Key()
+	// 	stakingStore.Delete(key)
+	// }
+	// iterator.Close()
 
-	timestamp := func(key []byte) time.Time {
-		bz := key[len(stakingtypes.UnbondingQueueKey):]
-		timestamp, err := sdk.ParseTimeBytes(bz)
-		if err != nil {
-			panic(err)
-		}
-		return timestamp
-	}
+	// timestamp := func(key []byte) time.Time {
+	// 	bz := key[len(stakingtypes.UnbondingQueueKey):]
+	// 	timestamp, err := sdk.ParseTimeBytes(bz)
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+	// 	return timestamp
+	// }
 
-	// Remove all validators from unbonding queue
-	iterator = stakingStore.Iterator(stakingtypes.UnbondingQueueKey, storetypes.PrefixEndBytes(stakingtypes.UnbondingQueueKey))
-	for ; iterator.Valid(); iterator.Next() {
-		key := iterator.Key()
-		if timestamp(key).After(time.Now()) {
-			continue
-		} else {
-			stakingStore.Delete(key)
-		}
-	}
-	iterator.Close()
+	// // Remove all validators from unbonding queue
+	// iterator = stakingStore.Iterator(stakingtypes.UnbondingQueueKey, storetypes.PrefixEndBytes(stakingtypes.UnbondingQueueKey))
+	// for ; iterator.Valid(); iterator.Next() {
+	// 	key := iterator.Key()
+	// 	if timestamp(key).After(time.Now()) {
+	// 		continue
+	// 	} else {
+	// 		stakingStore.Delete(key)
+	// 	}
+	// }
+	// iterator.Close()
 
 	// Add our validator to power and last validators store
 	app.StakingKeeper.SetValidator(ctx, newVal)
@@ -203,18 +203,18 @@ func initAppForTestnet(app *app.RealioNetwork, args valArgs) *app.RealioNetwork 
 	app.StakingKeeper.SetValidatorByPowerIndex(ctx, newVal)
 	app.StakingKeeper.SetLastValidatorPower(ctx, newVal.GetOperator(), 1000000000000000000)
 
-	paramStaking := app.StakingKeeper.GetParams(ctx)
-	paramStaking.UnbondingTime = 15 * time.Second
-	app.StakingKeeper.SetParams(ctx, paramStaking)
+	// paramStaking := app.StakingKeeper.GetParams(ctx)
+	// paramStaking.UnbondingTime = 15 * time.Second
+	// app.StakingKeeper.SetParams(ctx, paramStaking)
 
 	// DISTRIBUTION
 	//
 
 	// Initialize records for this validator across all distribution stores
-	app.DistrKeeper.SetValidatorHistoricalRewards(ctx, newVal.GetOperator(), 0, distrtypes.NewValidatorHistoricalRewards(sdk.DecCoins{}, 1))
-	app.DistrKeeper.SetValidatorCurrentRewards(ctx, newVal.GetOperator(), distrtypes.NewValidatorCurrentRewards(sdk.DecCoins{}, 1))
-	app.DistrKeeper.SetValidatorAccumulatedCommission(ctx, newVal.GetOperator(), distrtypes.InitialValidatorAccumulatedCommission())
-	app.DistrKeeper.SetValidatorOutstandingRewards(ctx, newVal.GetOperator(), distrtypes.ValidatorOutstandingRewards{Rewards: sdk.DecCoins{}})
+	// app.DistrKeeper.SetValidatorHistoricalRewards(ctx, newVal.GetOperator(), 0, distrtypes.NewValidatorHistoricalRewards(sdk.DecCoins{}, 1))
+	// app.DistrKeeper.SetValidatorCurrentRewards(ctx, newVal.GetOperator(), distrtypes.NewValidatorCurrentRewards(sdk.DecCoins{}, 1))
+	// app.DistrKeeper.SetValidatorAccumulatedCommission(ctx, newVal.GetOperator(), distrtypes.InitialValidatorAccumulatedCommission())
+	// app.DistrKeeper.SetValidatorOutstandingRewards(ctx, newVal.GetOperator(), distrtypes.ValidatorOutstandingRewards{Rewards: sdk.DecCoins{}})
 
 	// SLASHING
 	//
