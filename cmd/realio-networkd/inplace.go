@@ -10,6 +10,7 @@ import (
 	// "path/filepath"
 	"strings"
 
+	// "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
@@ -228,6 +229,12 @@ func initAppForTestnet(app *app.RealioNetwork, args valArgs) *app.RealioNetwork 
 	}
 	app.SlashingKeeper.SetValidatorSigningInfo(ctx, newConsAddr, newValidatorSigningInfo)
 
+	// // MINT
+	// p := app.MintKeeper.GetMinter(ctx)
+	// p.AnnualProvisions = sdk.MustNewDecFromStr("47103769757652020228568450937") //.NewInFromString("75000000000000000000000000")
+	// p.Inflation = sdk.MustNewDecFromStr("1")
+	// app.MintKeeper.SetMinter(ctx, p)
+
 	//
 	// Optional Changes:
 	//
@@ -236,11 +243,11 @@ func initAppForTestnet(app *app.RealioNetwork, args valArgs) *app.RealioNetwork 
 	//
 	bondDenom := app.StakingKeeper.BondDenom(ctx)
 
-	amount, ok := sdk.NewIntFromString("171037697576520208568450937")
+	amount, ok := sdk.NewIntFromString("17103769757652020228568450937")
 	if !ok {
 		amount = sdk.NewInt(1000000000000000000)
 	}
-	defaultCoins := sdk.NewCoins(sdk.NewCoin(bondDenom, amount))
+	defaultCoins := sdk.NewCoins(sdk.NewCoin(bondDenom, sdk.NewInt(1000000000000000000)), sdk.NewCoin("ario", amount))
 
 	// Fund local accounts
 	for _, account := range args.accountsToFund {
@@ -253,6 +260,7 @@ func initAppForTestnet(app *app.RealioNetwork, args valArgs) *app.RealioNetwork 
 			tmos.Exit(err.Error())
 		}
 	}
+
 	//
 	// Optional Changes:
 	//
