@@ -203,9 +203,9 @@ func initAppForTestnet(app *app.RealioNetwork, args valArgs) *app.RealioNetwork 
 	app.StakingKeeper.SetValidatorByPowerIndex(ctx, newVal)
 	app.StakingKeeper.SetLastValidatorPower(ctx, newVal.GetOperator(), 1000000000000000000)
 
-	// paramStaking := app.StakingKeeper.GetParams(ctx)
-	// paramStaking.UnbondingTime = 15 * time.Second
-	// app.StakingKeeper.SetParams(ctx, paramStaking)
+	paramStaking := app.StakingKeeper.GetParams(ctx)
+	paramStaking.UnbondingTime = 86400 * time.Second
+	app.StakingKeeper.SetParams(ctx, paramStaking)
 
 	// DISTRIBUTION
 	//
