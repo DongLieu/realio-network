@@ -16,7 +16,7 @@ func TestFork(t *testing.T) {
 	realio := Setup(false, nil, 1)
 
 	ctx := realio.BaseApp.NewContext(false, tmproto.Header{Height: ForkHeight})
-	stakingKeeper := realio.StakingKeeper
+	stakingKeeper := realio.MultiStakingKeeper
 
 	timeKey := time.Date(2024, 4, 1, 1, 1, 1, 1, time.UTC)
 
@@ -76,7 +76,7 @@ func TestFork(t *testing.T) {
 }
 
 func checkDuplicateUBDQueue(ctx sdk.Context, realio RealioNetwork) bool {
-	ubdIter := realio.StakingKeeper.UBDQueueIterator(ctx, oneEnternityLater)
+	ubdIter := realio.MultiStakingKeeper.UBDQueueIterator(ctx, oneEnternityLater)
 	defer ubdIter.Close()
 
 	for ; ubdIter.Valid(); ubdIter.Next() {
@@ -100,7 +100,7 @@ func checkDuplicateUBD(eels []stakingtypes.DVPair) bool {
 }
 
 func checkDuplicateRelegationQueue(ctx sdk.Context, realio RealioNetwork) bool {
-	redeIter := realio.StakingKeeper.RedelegationQueueIterator(ctx, oneEnternityLater)
+	redeIter := realio.MultiStakingKeeper.RedelegationQueueIterator(ctx, oneEnternityLater)
 	defer redeIter.Close()
 
 	for ; redeIter.Valid(); redeIter.Next() {
@@ -124,7 +124,7 @@ func checkDuplicateRedelegation(eels []stakingtypes.DVVTriplet) bool {
 }
 
 func checkDuplicateValQueue(ctx sdk.Context, realio RealioNetwork) bool {
-	valsIter := realio.StakingKeeper.ValidatorQueueIterator(ctx, oneEnternityLater, 9999)
+	valsIter := realio.MultiStakingKeeper.ValidatorQueueIterator(ctx, oneEnternityLater, 9999)
 	defer valsIter.Close()
 
 	for ; valsIter.Valid(); valsIter.Next() {

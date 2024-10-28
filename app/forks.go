@@ -62,11 +62,10 @@ func (app *RealioNetwork) ScheduleForkUpgrade(ctx sdk.Context) {
 
 func removeDuplicateValueRedelegationQueueKey(app *RealioNetwork, ctx sdk.Context) {
 	// Get Staking keeper, codec and staking store
-	sk := app.StakingKeeper
 	cdc := app.AppCodec()
 	store := ctx.KVStore(app.keys[stakingtypes.ModuleName])
 
-	redelegationTimesliceIterator := sk.RedelegationQueueIterator(ctx, oneEnternityLater) // make sure to iterate all queue
+	redelegationTimesliceIterator := app.MultiStakingKeeper.RedelegationQueueIterator(ctx, oneEnternityLater) // make sure to iterate all queue
 	defer redelegationTimesliceIterator.Close()
 
 	for ; redelegationTimesliceIterator.Valid(); redelegationTimesliceIterator.Next() {
@@ -103,7 +102,7 @@ func containsDVVTriplets(s []stakingtypes.DVVTriplet, e stakingtypes.DVVTriplet)
 }
 
 func removeDuplicateUnbondingValidator(app *RealioNetwork, ctx sdk.Context) {
-	valIter := app.StakingKeeper.ValidatorQueueIterator(ctx, oneEnternityLater, 99999999999999)
+	valIter := app.MultiStakingKeeper.ValidatorQueueIterator(ctx, oneEnternityLater, 99999999999999)
 	defer valIter.Close()
 
 	for ; valIter.Valid(); valIter.Next() {
@@ -127,11 +126,10 @@ func removeDuplicateUnbondingValidator(app *RealioNetwork, ctx sdk.Context) {
 
 func removeDuplicateValueUnbondingQueueKey(app *RealioNetwork, ctx sdk.Context) {
 	// Get Staking keeper, codec and staking store
-	sk := app.StakingKeeper
 	cdc := app.AppCodec()
 	store := ctx.KVStore(app.keys[stakingtypes.ModuleName])
 
-	unbondingTimesliceIterator := sk.UBDQueueIterator(ctx, oneEnternityLater) // make sure to iterate all queue
+	unbondingTimesliceIterator := app.MultiStakingKeeper.UBDQueueIterator(ctx, oneEnternityLater) // make sure to iterate all queue
 	defer unbondingTimesliceIterator.Close()
 
 	for ; unbondingTimesliceIterator.Valid(); unbondingTimesliceIterator.Next() {

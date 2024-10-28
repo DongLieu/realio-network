@@ -30,7 +30,7 @@ func (app *RealioNetwork) setupUpgradeHandlers(appOpts servertypes.AppOptions) {
 		commission.CreateUpgradeHandler(
 			app.mm,
 			app.configurator,
-			&app.StakingKeeper,
+			&app.MultiStakingKeeper.Keeper,
 		),
 	)
 

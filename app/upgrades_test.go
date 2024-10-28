@@ -15,7 +15,7 @@ import (
 func TestCommissionUpgrade(t *testing.T) {
 	app := Setup(false, nil, 4)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{Height: app.LastBlockHeight() + 1})
-	validators := app.StakingKeeper.GetAllValidators(ctx)
+	validators := app.MultiStakingKeeper.GetAllValidators(ctx)
 
 	comm0 := stakingtypes.CommissionRates{
 		Rate:          sdk.MustNewDecFromStr("0.01"),
@@ -43,10 +43,10 @@ func TestCommissionUpgrade(t *testing.T) {
 	validators[2].Commission.CommissionRates = comm2
 	validators[3].Commission.CommissionRates = comm3
 
-	app.StakingKeeper.SetValidator(ctx, validators[0])
-	app.StakingKeeper.SetValidator(ctx, validators[1])
-	app.StakingKeeper.SetValidator(ctx, validators[2])
-	app.StakingKeeper.SetValidator(ctx, validators[3])
+	app.MultiStakingKeeper.SetValidator(ctx, validators[0])
+	app.MultiStakingKeeper.SetValidator(ctx, validators[1])
+	app.MultiStakingKeeper.SetValidator(ctx, validators[2])
+	app.MultiStakingKeeper.SetValidator(ctx, validators[3])
 
 	upgradePlan := upgradetypes.Plan{
 		Name:   commission.UpgradeName,
@@ -58,7 +58,7 @@ func TestCommissionUpgrade(t *testing.T) {
 	ctx = ctx.WithBlockHeader(tmproto.Header{Time: time.Now()})
 	app.UpgradeKeeper.ApplyUpgrade(ctx, upgradePlan)
 
-	validatorsAfter := app.StakingKeeper.GetAllValidators(ctx)
+	validatorsAfter := app.MultiStakingKeeper.GetAllValidators(ctx)
 
 	upgradeMinCommRate := sdk.MustNewDecFromStr(commission.NewMinCommisionRate)
 	require.Equal(t, validatorsAfter[0].Commission.CommissionRates.Rate, upgradeMinCommRate)
